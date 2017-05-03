@@ -1,0 +1,70 @@
+<html>
+    <script
+src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js">
+    </script>
+    
+    <head> <title> PSW2 - Aula 02/05/2017 </title> </head>
+    
+    <body ng-app="minhaapp" ng-controller="meuctrl">
+        Nome: <input type ="text" ng-model="piada.nome"><br>
+        Texto: <input type ="text" ng-model="piada.texto"><br>
+        Nota: <input type ="number" ng-model="piada.nota"><br>
+        Adulta: <input type ="checkbox" ng-model="piada.adulta"><br>
+        Autor: <input type ="text" ngmodel="piada.autor.nome"><br>
+        
+        <br>
+        {{piada}}
+        <br>
+        
+        <button ng-click="salvar(piada)"> Salvar </button>
+        <button ng-click="listar()">listar</button>
+        
+        <div ng-repeat="piada in piadas">
+            <ol>
+                <li>{{piada.nome}}</li>
+                <li>{{piada.nota}}</li>
+                <li>{{piada.autor.nome}}</li>
+            </ol>
+        </div>
+        
+        <p>Resultado:</p>
+        <p>status: {{status}}</p>
+        <p>erro: {{erro}}</p>
+        <p>resp: {{resp}}</p>
+        
+    </body>
+    
+    <script>
+        var app = angular.module('minhaapp', []);
+        
+        var controller = function($scope) {
+            $scope.status="parado";
+            
+            $scope.listar = function(){
+                $http.get("http://piada.herokuapp.com/piada")
+                .then(function(resp){
+                    $scope.piadas = resp;
+                },function(error){
+                    $scope.status="concluido";
+                    $scope.erro=error;
+                });
+            
+            
+            $scope.salvar = function(piada){
+            
+                $http.post("http://piada.herokuapp.com/piada",piada)
+                    .then(function(response){
+                        $scope.status="concluído";
+                        $scope.resp =response;
+                }, function(error){
+                    $scope.status="concluído";
+                    $scope.erro=error;
+                })
+            
+            }  
+        };
+
+               app.controller('MeuCTRL', controller);
+    </script>
+    
+    </html>
